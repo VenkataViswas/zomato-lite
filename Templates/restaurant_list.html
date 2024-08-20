@@ -1,0 +1,272 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Restaurant List</title>
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+            /* General styles */
+            body {
+                font-family: 'Roboto', sans-serif;
+                margin: 0;
+                padding: 0;
+                background: url('{{ url_for('static', filename='images/bi.png') }}') no-repeat center center fixed;
+                background-size: cover;
+                color: #343a40;
+                line-height: 1.6;
+            }
+            
+            .container {
+                background: rgba(255, 255, 255, 0.8); /* Slight white overlay for readability */
+                padding: 20px;
+                border-radius: 10px;
+                max-width: 1200px;
+                margin: 20px auto;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+            
+            h1 {
+                text-align: center;
+                color: #fe5722;
+                margin-bottom: 20px;
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            }
+
+            .search-filter-bar {
+                display: flex;
+                align-items: center;
+                margin-bottom: 20px;
+            }
+
+            .search-bar {
+                flex-grow: 1;
+                margin-right: 10px;
+                position: relative;
+            }
+
+            .search-bar input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 16px;
+            }
+
+            .search-icon {
+                font-size: 18px;
+                color: #fe5722;
+                cursor: pointer;
+                margin: 0 10px;
+            }
+
+            .filter-button {
+                padding: 10px 20px;
+                background-color: #fe5722;
+                color: #fff;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 16px;
+            }
+
+            .filters {
+                display: none;
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                padding: 20px;
+                margin-top: 10px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .filters label {
+                display: block;
+                margin-bottom: 10px;
+            }
+
+            .filters select,
+            .filters input[type="text"] {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 16px;
+                margin-bottom: 10px;
+            }
+
+            .filters button {
+                padding: 10px 20px;
+                background-color: #fe5722;
+                color: #fff;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 16px;
+            }
+
+            .filters button:hover {
+                background-color: #e64a19;
+            }
+
+            .restaurant-menu {
+                list-style-type: none;
+                padding: 0;
+            }
+
+            .menu-item {
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                margin-bottom: 20px;
+                padding: 20px;
+                text-align: center;
+            }
+
+            .menu-item h2 {
+                margin: 0;
+                color: #fe5722;
+            }
+
+            .btn-menu {
+                display: inline-block;
+                padding: 10px 20px;
+                background-color: #fe5722;
+                color: #fff;
+                text-decoration: none;
+                border-radius: 4px;
+                margin-top: 10px;
+            }
+
+            .btn-menu:hover {
+                background-color: #e64a19;
+            }
+
+            .pagination {
+                text-align: center;
+                margin-top: 20px;
+            }
+
+            .pagination .btn {
+                margin: 0 5px;
+                padding: 10px 20px;
+                background-color: #fe5722;
+                color: #fff;
+                text-decoration: none;
+                border-radius: 4px;
+            }
+
+            .pagination .btn:hover {
+                background-color: #e64a19;
+            }
+
+            .page-number {
+                display: inline-block;
+                margin: 0 5px;
+                padding: 10px 20px;
+                color: #333;
+                border-radius: 4px;
+                background-color: #f4f4f4;
+            }
+
+            .no-results {
+                text-align: center;
+                font-size: 18px;
+                color: #fe5722;
+                margin-top: 20px;
+            }
+            
+            .logo-container {
+                text-align: center;
+                margin: 20px 0;
+            }
+
+            .logo-container img {
+                width: 200px; /* Adjust the width as needed */
+                height: auto;
+            }
+        </style>
+        <script>
+            function toggleFilters() {
+                const filtersContent = document.querySelector('.filters');
+                if (filtersContent.style.display === 'block') {
+                    filtersContent.style.display = 'none';
+                } else {
+                    filtersContent.style.display = 'block';
+                }
+            }
+
+            function performSearch() {
+                const searchQuery = document.getElementById('search').value;
+                const searchUrl = new URL(window.location.href);
+                searchUrl.searchParams.set('search', searchQuery);
+                window.location.href = searchUrl.href;
+            }
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Restaurants</h1>
+            <div class="search-filter-bar">
+                <div class="search-bar">
+                    <input type="text" id="search" name="search" placeholder="Search by Name or Description" value="{{ search }}">
+                </div>
+                <span class="search-icon" onclick="performSearch()">&#128269;</span>
+                <button class="filter-button" onclick="toggleFilters()">Filter Options</button>
+            </div>
+            <div class="filters">
+                <form action="/restaurants" method="get">
+                    <label for="rating">Filter by Rating:</label>
+                    <select id="rating" name="rating" multiple>
+                        <option value="1" {% if '1' in ratings %}selected{% endif %}>1 Stars</option>
+                        <option value="2" {% if '2' in ratings %}selected{% endif %}>2 Stars</option>
+                        <option value="3" {% if '3' in ratings %}selected{% endif %}>3 Stars</option>
+                        <option value="4" {% if '4' in ratings %}selected{% endif %}>4 Stars</option>
+                        <option value="5" {% if '5' in ratings %}selected{% endif %}>5 Stars</option>
+                    </select>
+
+                    <label for="average_cost">Filter by Average Cost for Two:</label>
+                    <select id="average_cost" name="average_cost">
+                        <option value="">Select Cost Range</option>
+                        <option value="<20" {% if selected_cost == '<20' %}selected{% endif %}>< $20</option>
+                        <option value="20-50" {% if selected_cost == '20-50' %}selected{% endif %}>$20 - $50</option>
+                        <option value="50-500" {% if selected_cost == '50-500' %}selected{% endif %}>$50 - $500</option>
+                        <option value=">1000" {% if selected_cost == '>1000' %}selected{% endif %}>$1000+</option>
+                    </select>
+
+                    <label for="cuisines">Filter by Cuisines:</label>
+                    <select id="cuisines" name="cuisines" multiple>
+                        <option value="Italian" {% if 'Italian' in selected_cuisines %}selected{% endif %}>Italian</option>
+                        <option value="Chinese" {% if 'Chinese' in selected_cuisines %}selected{% endif %}>Chinese</option>
+                        <option value="Indian" {% if 'Indian' in selected_cuisines %}selected{% endif %}>Indian</option>
+                        <option value="Mexican" {% if 'Mexican' in selected_cuisines %}selected{% endif %}>Mexican</option>
+                    </select>
+
+                    <button type="submit">Apply Filters</button>
+                </form>
+            </div>
+            <ul class="restaurant-menu">
+                {% if restaurants %}
+                    {% for restaurant in restaurants %}
+                    <li class="menu-item">
+                        <h2 class="title">{{ restaurant['name'] }}</h2>
+                        <a href="/restaurants/{{ restaurant['id'] }}?page={{ page }}&per_page={{ per_page }}&search={{ search }}&rating={{ ratings|join(',') }}&average_cost={{ average_cost }}&cuisines={{ cuisines|join(',') }}" class="btn-menu">View Details</a>
+                    </li>
+                    {% endfor %}
+                {% else %}
+                    <div class="no-results">No restaurants found matching your criteria.</div>
+                {% endif %}
+            </ul>
+            <div class="pagination">
+                {% if page > 1 %}
+                <a href="/restaurants?page={{ page - 1 }}&per_page={{ per_page }}{% if search %}&search={{ search }}{% endif %}{% if ratings %}&rating={{ ratings|join(',') }}{% endif %}{% if average_cost %}&average_cost={{ average_cost }}{% endif %}{% if cuisines %}&cuisines={{ cuisines|join(',') }}{% endif %}" class="btn">Previous</a>
+                {% endif %}
+                <span class="page-number">{{ page }}</span>
+                {% if restaurants|length == per_page %}
+                <a href="/restaurants?page={{ page + 1 }}&per_page={{ per_page }}{% if search %}&search={{ search }}{% endif %}{% if ratings %}&rating={{ ratings|join(',') }}{% endif %}{% if average_cost %}&average_cost={{ average_cost }}{% endif %}{% if cuisines %}&cuisines={{ cuisines|join(',') }}{% endif %}" class="btn">Next</a>
+                {% endif %}
+            </div>
+        </div>
+    </body>
+    </html>

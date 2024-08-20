@@ -1,0 +1,10 @@
+import json
+
+# Function to print the structure of the JSON file
+def print_json_structure(file_path):
+    with open(file_path, 'r') as file:
+        data = json.load(file)
+        print(json.dumps(data, indent=2))  # Print the JSON structure
+
+# Check one of your JSON files
+print_json_structure('file1.json')

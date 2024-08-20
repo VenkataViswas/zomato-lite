@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Details</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('{{ url_for('static', filename='images/bi2.png') }}') no-repeat center center fixed;
+            background-size: cover;
+            color: #343a40;
+            line-height: 1.6;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.6); /* Adjust transparency here */
+            padding: 20px;
+            border-radius: 20px;
+            max-width: 1000px;
+            margin: 20px auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px); /* Optional: Adds a blur effect to the background */
+        }
+
+        h1 {
+            text-align: center;
+            color: #fe5722;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .restaurant-detail {
+            background-color: rgba(255, 255, 255, 0.9); /* Slightly less transparent than container */
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .restaurant-detail h2 {
+            margin: 0 0 10px;
+            color: #333;
+        }
+
+        .restaurant-detail p {
+            margin: 5px 0;
+            color: #666;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #fe5722;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            background-color: #e64a19;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        .logo-container img {
+            width: 200px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ restaurant['name'] }}</h1>
+        <div class="restaurant-detail">
+            <h2>Address</h2>
+            <p>{{ restaurant['address'] }}</p>
+            <h2>City</h2>
+            <p>{{ restaurant['city'] }}</p>
+            <h2>Cuisines</h2>
+            <p>{{ restaurant['cuisines'] }}</p>
+            <h2>Average Cost for Two</h2>
+            <p>{{ restaurant['average_cost_for_two'] }}</p>
+            <h2>Aggregate Rating</h2>
+            <p>{{ restaurant['aggregate_rating'] }}</p>
+            <h2>Rating Color</h2>
+            <p style="color: {{ restaurant['rating_color'] }}">{{ restaurant['rating_color'] }}</p>
+            <h2>Rating Text</h2>
+            <p>{{ restaurant['rating_text'] }}</p>
+            <h2>Votes</h2>
+            <p>{{ restaurant['votes'] }}</p>
+            <a href="/restaurants" class="btn">Back to List</a>
+        </div>
+    </div>
+</body>
+</html>
